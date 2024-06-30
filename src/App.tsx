@@ -5,13 +5,13 @@ import { useSpeechSynthesis } from './hooks/use-speech-synthesis'
 import { cn } from './lib/utils'
 
 const BG_COLORS = [
-  'bg-yellow-500',
-  'bg-red-500',
-  'bg-green-500',
-  'bg-pink-500',
-  'bg-orange-500',
-  'bg-purple-500',
-  'bg-indigo-500',
+  'bg-yellow-900',
+  'bg-red-900',
+  'bg-green-900',
+  'bg-pink-900',
+  'bg-orange-900',
+  'bg-purple-900',
+  'bg-indigo-900',
 ]
 
 const generateRandomColor = () => {
@@ -28,13 +28,14 @@ export const App = () => {
   }
 
   return (
-    <div className={cn('min-h-screen', bgColor)}>
+    <div className={cn('min-h-screen flex justify-center items-center', bgColor)}>
       {alphabet.map((letter) => (
         <Button
           key={letter}
           size="icon"
           variant="ghost"
           onClick={() => handleSpeak(letter)}
+          className="text-2xl hover:text-3xl"
         >
           {letter}
         </Button>

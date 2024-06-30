@@ -29,21 +29,23 @@ export const App = () => {
   }
 
   useKeyboardListener((key: string) => {
-    if (alphabet.includes(key)) {
-      handleSpeak(key)
-    } else {
-      console.warn(`Key ${key} is not in the alphabet.`)
+    const data = alphabet.find((letter) => letter.letter === key)
+
+    if (!data) {
+      return console.warn(`Key ${key} is not in the alphabet.`)
     }
+
+    handleSpeak(`${data.letter} de ${data.example}`)
   })
 
   return (
     <div className={cn('min-h-screen flex justify-center items-center', bgColor)}>
-      {alphabet.map((letter) => (
+      {alphabet.map(({ letter, example }) => (
         <Button
           key={letter}
           size="icon"
           variant="ghost"
-          onClick={() => handleSpeak(letter)}
+          onClick={() => handleSpeak(`${letter} de ${example}`)}
           className="text-2xl hover:text-3xl"
         >
           {letter}

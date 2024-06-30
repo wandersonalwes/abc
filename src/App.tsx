@@ -3,6 +3,7 @@ import { Button } from './components/ui/button'
 import { alphabet } from './data/alphabet'
 import { useSpeechSynthesis } from './hooks/use-speech-synthesis'
 import { cn } from './lib/utils'
+import { useKeyboardListener } from './hooks/use-keyboard-listener'
 
 const BG_COLORS = [
   'bg-yellow-900',
@@ -26,6 +27,14 @@ export const App = () => {
     speak(letter)
     setBgColor(generateRandomColor())
   }
+
+  useKeyboardListener((key: string) => {
+    if (alphabet.includes(key)) {
+      handleSpeak(key)
+    } else {
+      console.warn(`Key ${key} is not in the alphabet.`)
+    }
+  })
 
   return (
     <div className={cn('min-h-screen flex justify-center items-center', bgColor)}>

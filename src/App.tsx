@@ -1,13 +1,25 @@
+import confetti from 'canvas-confetti'
+import { useEffect, useState } from 'react'
+
 import { cn } from './lib/utils'
 import { alphabet } from './data/alphabet'
+import { LetterButton } from './components/letter-button'
 import { useSpeechSynthesis } from './hooks/use-speech-synthesis'
 import { useKeyboardListener } from './hooks/use-keyboard-listener'
 
+type LetterItem = {
+  letter: string
+  example: string
+  emoji: string
+}
+
 export const App = () => {
   const { speak } = useSpeechSynthesis()
+  const [currentLetter, setCurrentLetter] = useState<LetterItem | null>()
 
-  const handleSpeak = (data: { letter: string; example: string }) => {
+  const handleSpeak = (data: { letter: string; example: string; emoji: string }) => {
     speak(`${data.letter} de ${data.example}`)
+    setCurrentLetter(data)
   }
 
   useKeyboardListener((key: string) => {
@@ -18,21 +30,41 @@ export const App = () => {
     }
 
     handleSpeak(data)
+    confetti()
   })
 
+  useEffect(() => {
+    let timeout: NodeJS.Timeout
+
+    if (currentLetter) {
+      timeout = setTimeout(() => setCurrentLetter(null), 2000)
+    }
+
+    return () => {
+      clearTimeout(timeout)
+    }
+  }, [currentLetter])
+
   return (
-    <div className={cn('min-h-screen flex justify-center items-center bg-green-200')}>
+    <div
+      className={cn(
+        'min-h-screen flex flex-col gap-6 justify-center items-center bg-green-200'
+      )}
+    >
+      {currentLetter && (
+        <span className="text-5xl text-green-500 [text-shadow:_1px_1px_0_#068532]">
+          {currentLetter.letter} = {currentLetter.emoji}
+        </span>
+      )}
       <div className="grid grid-cols-9 gap-6 shadow-custom rounded p-4 bg-board bg-green-50">
-        {alphabet.map(({ letter, example }) => (
-          <button
+        {alphabet.map(({ letter, example, emoji }) => (
+          <LetterButton
             key={letter}
-            onClick={() => handleSpeak({ letter, example })}
-            className="text-2xl hover:scale-[4] transition-transform duration-300 outline-none"
+            onClick={() => handleSpeak({ letter, example, emoji })}
+            isActive={currentLetter?.letter === letter}
           >
-            <span className="text-green-500 [text-shadow:_1px_1px_0_#068532]">
-              {letter}
-            </span>
-          </button>
+            {letter}
+          </LetterButton>
         ))}
       </div>
     </div>

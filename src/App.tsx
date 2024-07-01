@@ -1,31 +1,13 @@
-import { useState } from 'react'
-import { Button } from './components/ui/button'
+import { cn } from './lib/utils'
 import { alphabet } from './data/alphabet'
 import { useSpeechSynthesis } from './hooks/use-speech-synthesis'
-import { cn } from './lib/utils'
 import { useKeyboardListener } from './hooks/use-keyboard-listener'
-
-const BG_COLORS = [
-  'bg-yellow-900',
-  'bg-red-900',
-  'bg-green-900',
-  'bg-pink-900',
-  'bg-orange-900',
-  'bg-purple-900',
-  'bg-indigo-900',
-]
-
-const generateRandomColor = () => {
-  return BG_COLORS[Math.floor(Math.random() * BG_COLORS.length)]
-}
 
 export const App = () => {
   const { speak } = useSpeechSynthesis()
-  const [bgColor, setBgColor] = useState(generateRandomColor())
 
-  const handleSpeak = (letter: string) => {
-    speak(letter)
-    setBgColor(generateRandomColor())
+  const handleSpeak = (data: { letter: string; example: string }) => {
+    speak(`${data.letter} de ${data.example}`)
   }
 
   useKeyboardListener((key: string) => {
@@ -35,22 +17,24 @@ export const App = () => {
       return console.warn(`Key ${key} is not in the alphabet.`)
     }
 
-    handleSpeak(`${data.letter} de ${data.example}`)
+    handleSpeak(data)
   })
 
   return (
-    <div className={cn('min-h-screen flex justify-center items-center', bgColor)}>
-      {alphabet.map(({ letter, example }) => (
-        <Button
-          key={letter}
-          size="icon"
-          variant="ghost"
-          onClick={() => handleSpeak(`${letter} de ${example}`)}
-          className="text-2xl hover:text-3xl"
-        >
-          {letter}
-        </Button>
-      ))}
+    <div className={cn('min-h-screen flex justify-center items-center bg-green-200')}>
+      <div className="grid grid-cols-9 gap-6 shadow-custom rounded p-4 bg-board bg-green-50">
+        {alphabet.map(({ letter, example }) => (
+          <button
+            key={letter}
+            onClick={() => handleSpeak({ letter, example })}
+            className="text-2xl hover:scale-[4] transition-transform duration-300 outline-none"
+          >
+            <span className="text-green-500 [text-shadow:_1px_1px_0_#068532]">
+              {letter}
+            </span>
+          </button>
+        ))}
+      </div>
     </div>
   )
 }

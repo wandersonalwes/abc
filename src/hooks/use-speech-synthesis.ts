@@ -2,6 +2,9 @@ export const useSpeechSynthesis = (lang: string = 'pt-BR') => {
   const speak = (text: string) => {
     if ('speechSynthesis' in window) {
       const synth = window.speechSynthesis
+
+      synth.cancel()
+
       const utterThis = new SpeechSynthesisUtterance(text)
 
       utterThis.lang = lang
